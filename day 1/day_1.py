@@ -1,5 +1,9 @@
-file = "input.txt"
-# file = "test.txt"
+import os
+
+script_dir = os.path.dirname(os.path.realpath(__file__))
+
+file = os.path.join(script_dir, "input.txt")
+# file = os.path.join(script_dir, "test.txt")
 
 f = open(file, "r")
 file_data = f.readlines()
@@ -28,38 +32,21 @@ for instruction in data:
         password_part1 += 1
 
     # part 2: check how many times it passes a multiple of 100
-    if current_position + instruction != new_position: # if they are different, it means that the new number is in a different grouping of 100 and has crossed 0 at least once
-        difference = current_position + instruction - new_position # the amount in hundreds that the new number is off by
+    difference = current_position + instruction - new_position # the amount in hundreds that the new number is off by
+    
+    # if it starts at 0 and goes left
+    if started_at_zero and instruction < 0:
+        # disregard the first "crossing of zero" (leaving the starting point)
+        password_part2 += abs(difference/100) - 1
 
-        # If it has CROSSED A THRESHOLD (difference is at least 100)
-        
-        # if it starts at 0 and goes left
-        if started_at_zero and instruction < 0:
-            # disregard the first "crossing of zero" (leaving the starting point)
-            password_part2 += abs(difference/100) - 1
+    # goes left and ends on 0
+    elif ended_at_zero and instruction < 0:
+        # add an extra counting for when it hits 0 at the end
+        password_part2 += abs(difference/100) + 1 
 
-        # starts at 0 and goes right
-        elif started_at_zero and instruction > 0:
-            # count how many chunks away the new number is
-            # no adjustments necessary
-            password_part2 += abs(difference/100) 
-
-        # goes left and ends on 0
-        elif ended_at_zero and instruction < 0:
-            # add an extra counting for when it hits 0 at the end
-            password_part2 += abs(difference/100) + 1 
-
-        # neither starts at 0 nor ends at 0 so you can just count how many chunks of 100 have passed
-        else:
-            password_part2 += abs(difference/100)
-
-    # doesn't CROSS the threshold but could still END on a 0 which would count
+    # neither starts at 0 nor ends at 0 so you can just count how many chunks of 100 have passed
     else:
-        # only counts if it ends on 0
-        if ended_at_zero:
-            password_part2 += 1
-        else: # neither crossed a 0 not ended on a 0 so doesn't count
-            pass
+        password_part2 += abs(difference/100)
 
     # reset for next instruction
     current_position = new_position
