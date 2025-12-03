@@ -2,7 +2,7 @@ import os
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
 file = os.path.join(script_dir, "input.txt")
-file = os.path.join(script_dir, "test.txt")
+# file = os.path.join(script_dir, "test.txt")
 
 f = open(file, "r")
 file_data = f.readlines()
@@ -42,13 +42,14 @@ def get_joltage(battery_bank, number_of_batteries):
     digits = []
     min_index = 0
     current_index = 0
-    total_batteries = len(battery_bank) # eg 15
     for i in range(number_of_batteries): # loop this many times
-        max_index = total_batteries + 1 - number_of_batteries + len(digits) # eg 15 + 1 - 2 = 14 (last digit but not inclusive in slice)
-        current_digit = max(battery_bank[min_index:max_index]) # the highest number in the available slice
+        unreserved = len(battery_bank) - number_of_batteries + len(digits) + 1 # keep the last x digits free for future loops
+        current_slice = battery_bank[min_index:unreserved]
+        current_digit = max(current_slice) # the highest number in the available slice
         while battery_bank[current_index] != current_digit: # increment index until you reach the position of this number
             current_index += 1
-        min_index = current_index + 1 
+        min_index = current_index + 1
+        current_index += 1 
         digits.append(current_digit)
 
     string = ""
