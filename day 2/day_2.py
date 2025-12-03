@@ -30,13 +30,14 @@ for n in range(1,12):
 invalid_IDs = []
 partB_invalid_IDs = []
 for pair in list_of_ranges:
-    for n in range(pair[0], pair[1]+1):
+    for n in range(pair[0], pair[1]+1): # iterate through the range, upper and lower bounds inclusive
         number_of_digits = len(str(n))
-        mid = int(number_of_digits/2)
         number_str = str(n)
+        ### part A, check if first half is the same as second half
+        mid = int(number_of_digits/2)
         if number_str[:mid] == number_str[mid:]:
             invalid_IDs.append(n)
-        ### part B
+        ### part B, check if it is made up of repeating chunks of {factor} size
         factors_to_check = factors[number_of_digits]
         chunks = []
         index = 0
@@ -44,10 +45,12 @@ for pair in list_of_ranges:
         while done == False:
             if number_of_digits == 1:
                 done = True
-            for chunk_size in factors_to_check[:-1]:
+            for chunk_size in factors_to_check[:-1]: # don't check last factor. All digits the same 1x5 (11111) counts but all different 5x1 (12345) doesn't
+                # split into equally sized strings
                 for i in range(int(number_of_digits/chunk_size)):
                     chunks.append(number_str[index:index+chunk_size])
                     index += chunk_size
+                # check if the strings are the same
                 if len(set(chunks)) == 1:
                     partB_invalid_IDs.append(n)
                     chunks = []
