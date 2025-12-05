@@ -12,7 +12,8 @@ f.close()
 
 data = []
 for row in file_data:
-    data.append([x for x in row.strip().split()[0]])
+    # turn data into a 2d array of a list (rows) of a list of strings (columns) so that the contents can be changed [".", ".", "@"]
+    data.append([x for x in row.strip().split()[0]]) 
 
 def check_if_accessible(row_index, col_index, grid):
     # the upper and lower bounds of the box
